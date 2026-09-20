@@ -242,6 +242,34 @@
     height:100%;
     border:0;
   }
+  .sound-btn{
+    position:absolute;
+    right:12px;
+    bottom:12px;
+    z-index:5;
+    width:42px;
+    height:42px;
+    border-radius:50%;
+    border:1.5px solid var(--neon-yellow);
+    background:rgba(10,8,4,.55);
+    backdrop-filter:blur(2px);
+    color:#fff;
+    font-size:18px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    box-shadow:0 0 10px rgba(244,255,43,.55);
+    animation:soundPulse 1.6s ease-in-out infinite;
+    transition:opacity .5s ease;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .sound-btn.on{border-color:var(--neon-pink); box-shadow:0 0 10px rgba(255,47,176,.55); animation:none;}
+  .sound-btn.fade{opacity:0; pointer-events:none;}
+  @keyframes soundPulse{
+    0%,100%{transform:scale(1);}
+    50%{transform:scale(1.08);}
+  }
   /* ---------- Botón común ---------- */
   .next-btn{
     margin-top:28px;
@@ -599,6 +627,7 @@
     <div class="video-content">
       <div class="video-box">
         <iframe id="vimeoFrame" src="https://player.vimeo.com/video/1228565444?title=0&byline=0&portrait=0&loop=1&autoplay=1&muted=1" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+        <button type="button" class="sound-btn" id="soundBtn" aria-label="Activar sonido">🔇</button>
       </div>
       <p class="nice-day" id="niceDay">Que tengas un bonito día ☀️</p>
     </div>
@@ -844,8 +873,21 @@
       setTimeout(function(){ niceDay.classList.add("show"); }, 3200);
     }
   }
+
+  var vimeoFrame = document.getElementById("vimeoFrame");
+  var soundBtn = document.getElementById("soundBtn");
+  soundBtn.addEventListener("click", function(){
+    try{
+      vimeoFrame.contentWindow.postMessage(JSON.stringify({method:"setVolume", value:1}), "https://player.vimeo.com");
+      vimeoFrame.contentWindow.postMessage(JSON.stringify({method:"play"}), "https://player.vimeo.com");
+    }catch(e){}
+    soundBtn.textContent = "🔊";
+    soundBtn.classList.add("on");
+    setTimeout(function(){ soundBtn.classList.add("fade"); }, 1400);
+  });
 })();
 </script>
 </body>
 </html>
+
 
